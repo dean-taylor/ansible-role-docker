@@ -1,0 +1,32 @@
+---
+# tasks file for docker
+- name: Docker
+  include_tasks: docker.yml
+
+- name: Docker swarm
+  block:
+    - name: Docker swarm init
+      include_tasks: swarm-init.yml
+      when:
+        - inventory_hostname == groups["docker_swarm_manager"][0]
+
+    - name: Set fact swarm-manager-addr
+      ansible.builtin.set_fact:
+        swarm_manager_addr: "{{ hostvars[groups['docker_swarm_manager'][0]]['swarm.manager_addr'] }}"
+      when:
+        - inventory_hostname != groups["docker_swarm_manager"][0]
+
+    - name: Docker swarm join manager
+      include_tasks: swarm-join-manager.yml
+      when:
+        - "'docker_swarm_manager' in group_names"
+        - inventory_hostname != groups["docker_swarm_manager"][0]
+
+    - name: Docker swarm join worker
+      include_tasks: swarm-join-worker.yml
+      when:
+        - "'docker_swarm_manager' not in group_names"
+  when:
+    - ansible_local.docker is defined
+    - ansible_local.docker.Swarm is undefined
+

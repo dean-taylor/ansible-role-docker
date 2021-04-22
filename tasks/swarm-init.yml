@@ -1,0 +1,8 @@
+---
+# https://docs.docker.com/engine/swarm/swarm-tutorial/create-swarm/
+- name: Docker swarm init
+  ansible.builtin.command:
+    cmd: >
+      docker swarm init
+      --advertise-addr {{ swarm.advertise_addr }}:{{ swarm.port }}
+      --listen-address {{ swarm.listen_addr }}:{{ swarm.port }}

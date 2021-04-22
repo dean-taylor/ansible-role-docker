@@ -1,0 +1,18 @@
+---
+# task file for docker swarm join worker
+- name: Register swarm join token worker
+  ansible.builtin.shell:
+    cmd: docker swarm join-token -q worker
+  changed_when: false
+  delegate_facts: true
+  delegate_to: "{{ groups['docker_swarm_manager'][0] }}"
+  register: swarm_join_token_worker
+
+- name: Docker swarm join worker
+  ansible.builtin.command:
+    cmd: >
+      docker swarm join
+      --advertise-addr {{ swarm.advertise_addr }}:{{ swarm.port }}
+      --listen-addr {{ swarm.listen_addr }}:{{ swarm.port }}
+      --token {{ swarm_join_token_worker.stdout }}
+      {{ swarm_manager_addr }}:{{ swarm.port }}
