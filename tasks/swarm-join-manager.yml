@@ -12,7 +12,7 @@
   ansible.builtin.command:
     cmd: >
       docker swarm join
-      --advertise-addr {{ swarm.advertise_addr }}:{{ swarm.port }}
-      --listen-addr {{ swarm.listen_addr }}:{{ swarm.port }}
+      --advertise-addr {{ swarm_advertise_addr }}:{{ swarm_port }}
+      --listen-addr {{ swarm_listen_addr }}:{{ swarm_port }}
       --token {{ swarm_join_token_manager.stdout }}
-      {{ swarm_manager_addr }}:{{ swarm.port }}
+      {{ swarm_manager_addr }}:{{ swarm_port }}

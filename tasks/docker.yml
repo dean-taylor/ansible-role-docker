@@ -14,7 +14,7 @@
 
 - name: Docker gpg import
   ansible.builtin.apt_key:
-    id: "{{ docker.apt_key_id }}"
+    id: "{{ docker_apt_key_id }}"
     state: present
     url: https://download.docker.com/linux/ubuntu/gpg
 - name: Docker repo
@@ -29,9 +29,9 @@
     name: "{{ item }}"
     state: present
   with_items:
-    - docker-ce={{ docker.version }}
-    - docker-ce-cli={{ docker.version }}
-    - containerd.io={{ containerd.version }}
+    - docker-ce={{ docker_version }}
+    - docker-ce-cli={{ docker_version }}
+    - containerd.io={{ containerd_version }}
 
 - name: Docker group
   ansible.builtin.user:
@@ -40,7 +40,7 @@
       - docker
     name: "{{ item }}"
   with_items:
-    - "{{ docker.group_members }}"
+    - "{{ docker_group_members }}"
 
 - name: Ansible fact.d directory
   ansible.builtin.file:

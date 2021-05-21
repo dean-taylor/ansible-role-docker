@@ -2,7 +2,7 @@
 # https://docs.docker.com/engine/swarm/swarm-tutorial/create-swarm/
 - name: Docker swarm init
   ansible.builtin.command:
-    cmd: docker swarm init --advertise-addr {{ swarm.advertise_addr }}
+    cmd: docker swarm init --advertise-addr {{ swarm_advertise_addr }}
   when:
     - inventory_hostname == groups["docker_swarm_manager"][0]
 - name: Register swarm join token worker
@@ -12,7 +12,7 @@
   register: swarm_join_token_worker
 - name: Docker swarm join
   ansible.builtin.command:
-    cmd: docker swarm join --token {{ swarm_join_token_worker }} {{ swarm.advertise_addr }}:{{ swarm.port }}
+    cmd: docker swarm join --token {{ swarm_join_token_worker }} {{ swarm_advertise_addr }}:{{ swarm_port }}
   when:
     - groups["docker_swarm_manager"][0] != inventory_hostname
     - inventory_hostname in groups["docker_swarm_worker"]
