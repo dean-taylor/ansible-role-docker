@@ -1,0 +1,17 @@
+#!/usr/bin/env python3
+import json
+import subprocess
+
+try:
+    dockerInfo = subprocess.run(['/usr/bin/docker','info',{% raw %}'--format="{{ json . }}"'{% endraw %}], capture_output=True, timeout=5)
+    dockerFact = json.loads(dockerInfo.stdout.decode('utf-8').strip('"\n'))
+
+    try:
+        with open('{{ docker_tls_cert_path }}','r') as file:
+            dockerFact['tlscert'] = file.read()
+    except:
+        pass
+
+    print(json.dumps(dockerFact))
+except:
+    print('{}')

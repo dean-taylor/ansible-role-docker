@@ -1,2 +1,10 @@
 ---
 # handlers file for docker
+- name: systemctl daemon-reload
+  ansible.builtin.systemd:
+    daemon_reload: yes
+
+- name: restart docker
+  ansible.builtin.service:
+    name: docker.service
+    state: restarted

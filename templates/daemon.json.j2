@@ -1,0 +1,8 @@
+{
+{% if docker_tls %}
+  "tls": true,
+  "tlscacert": "{{ docker_tls_cacert_path }}",
+  "tlscert": "{{ docker_tls_cert_path }}",
+  "tlskey": "{{ docker_tls_key_path }}"
+{% endif -%}
+}

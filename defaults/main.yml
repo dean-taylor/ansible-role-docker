@@ -1,12 +1,21 @@
 ---
 # defaults file for docker
-containerd_version: "1.4.4-1"
+docker_containerd_version: "1.4.4-1"
 docker_apt_key_id: "9DC858229FC7DD38854AE2D88D81803C0EBFCD88"
 docker_group_members:
   - "{{ ansible_user_id }}"
 docker_version: "5:20.10.6~3-0~ubuntu-focal"
-swarm:
-swarm_interface: "{{ ansible_default_ipv4.interface }}"
-swarm_advertise_addr: "{{ hostvars[inventory_hostname]['ansible_'+ swarm_interface]['ipv4']['address'] }}"
-swarm_listen_addr: "{{ hostvars[inventory_hostname]['ansible_'+ swarm_interface]['ipv4']['address'] }}"
-swarm_port: 2377
+docker_swarm_interface: "{{ ansible_default_ipv4.interface }}"
+docker_swarm_advertise_addr: "{{ hostvars[inventory_hostname]['ansible_'+ swarm_interface]['ipv4']['address'] }}"
+docker_swarm_listen_addr: "{{ hostvars[inventory_hostname]['ansible_'+ swarm_interface]['ipv4']['address'] }}"
+docker_swarm_port: 2377
+docker_tls: false
+docker_tls_cacert: ""
+docker_tls_cert: ""
+docker_tls_key: ""
+docker_tls_cacert_path: '/etc/ssl/docker.ca'
+docker_tls_cert_path: '/etc/ssl/docker.cert'
+docker_tls_key_path: '/etc/ssl/docker.key'
+docker_hosts: []
+#docker_hosts:
+#  - tcp://0.0.0.0:2375
