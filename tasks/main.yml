@@ -22,11 +22,10 @@
       include_tasks: swarm-init.yml
       when:
         - inventory_hostname == docker_swarm_managers |first
-        - ansible_local.docker.Swarm.Cluster is not defined
 
     - name: docker swarm manager address?
       ansible.builtin.set_fact:
-        docker_swarm_manager_addr: "{{ hostvars[(docker_swarm_managers |first)]['swarm.manager_addr'] }}"
+        docker_swarm_manager_addr: "{{ hostvars[(docker_swarm_managers |first)]['ansible_local']['docker']['Swarm']['NodeAddr'] }}"
       when:
         - inventory_hostname != docker_swarm_managers |first
 
@@ -46,3 +45,4 @@
     - docker_swarm |bool
     - ansible_local.docker is defined
     - ansible_local.docker.Swarm is defined
+    - ansible_local.docker.Swarm.NodeID | length == 0
