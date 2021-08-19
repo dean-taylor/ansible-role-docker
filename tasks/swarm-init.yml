@@ -4,5 +4,5 @@
   ansible.builtin.command:
     cmd: >
       docker swarm init
-      --advertise-addr {{ swarm_advertise_addr }}:{{ swarm_port }}
-      --listen-address {{ swarm_listen_addr }}:{{ swarm_port }}
+      --advertise-addr {{ docker_swarm_advertise_addr }}:{{ docker_swarm_port }}
+      --listen-addr {{ docker_swarm_listen_addr }}:{{ docker_swarm_port }}

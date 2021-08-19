@@ -5,14 +5,14 @@
     cmd: docker swarm join-token -q manager
   changed_when: false
   delegate_facts: true
-  delegate_to: "{{ groups['docker_swarm_manager'][0] }}"
-  register: swarm_join_token_manager
+  delegate_to: "{{ docker_swarm_managers |first }}"
+  register: docker_swarm_join_token_manager
 
 - name: Docker swarm join manager
   ansible.builtin.command:
     cmd: >
       docker swarm join
-      --advertise-addr {{ swarm_advertise_addr }}:{{ swarm_port }}
-      --listen-addr {{ swarm_listen_addr }}:{{ swarm_port }}
-      --token {{ swarm_join_token_manager.stdout }}
-      {{ swarm_manager_addr }}:{{ swarm_port }}
+      --advertise-addr {{ docker_swarm_advertise_addr }}:{{ docker_swarm_port }}
+      --listen-addr {{ docker_swarm_listen_addr }}:{{ docker_swarm_port }}
+      --token {{ docker_swarm_join_token_manager.stdout }}
+      {{ docker_swarm_manager_addr }}:{{ docker_swarm_port }}
