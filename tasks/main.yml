@@ -14,7 +14,7 @@
   block:
     - name: docker swarm managers?
       ansible.builtin.set_fact:
-        docker_swarm_managers: "{{ groups[docker_swarm_group] | default(ansible_play_hosts) }}"
+        docker_swarm_managers: "{{ (groups[docker_swarm_group] | default(ansible_play_hosts)) | intersect(ansible_play_hosts_all) }}"
     - ansible.builtin.debug:
         msg: Docker swarm manager nodes are {{ docker_swarm_managers }}
 
