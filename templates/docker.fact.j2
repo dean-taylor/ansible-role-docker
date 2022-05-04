@@ -3,7 +3,7 @@ import json
 import subprocess
 
 try:
-    dockerInfo = subprocess.run(['/usr/bin/docker','info',{% raw %}'--format="{{ json . }}"'{% endraw %}], capture_output=True, timeout=5)
+    dockerInfo = subprocess.run(['/usr/bin/docker','info',{% raw %}'--format="{{json .}}"'{% endraw %}], capture_output=True, timeout=5)
     dockerFact = json.loads(dockerInfo.stdout.decode('utf-8').strip('"\n'))
 
     try:

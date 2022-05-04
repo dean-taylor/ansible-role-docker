@@ -8,3 +8,7 @@
   ansible.builtin.service:
     name: docker.service
     state: restarted
+
+- name: update local facts
+  ansible.builtin.setup:
+    filter: ansible_local

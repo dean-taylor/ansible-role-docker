@@ -1,5 +1,17 @@
 ---
-- block:
+# roles/docker/tasks/configure.yml
+#
+- name: docker security group
+  ansible.builtin.user:
+    append: yes
+    groups:
+      - docker
+    name: "{{ item }}"
+  with_items:
+    - "{{ docker_group_members }}"
+
+- name: configure remote access
+  block:
     - name: /etc/systemd/system/docker.service.d
       ansible.builtin.file:
         group: root
@@ -20,45 +32,37 @@
         - systemctl daemon-reload
         - restart docker
   when:
-    - docker_hosts | length > 0
+    - docker_swarm_enabled
+
+- name: tls
+  block:
+    - name: tls docker.ca
+      ansible.builtin.copy:
+        content: "{{ docker_tls_cacert }}"
+        dest: "{{ docker_tls_cacert_path }}"
+        mode: 0544
+
+    - name: tls docker.cert
+      ansible.builtin.copy:
+        content: "{{ docker_tls_cert }}"
+        dest: "{{ docker_tls_cert_path }}"
+        mode: 0544
+
+    - name: tls docker.key
+      ansible.builtin.copy:
+        content: "{{ docker_tls_key }}"
+        dest: "{{ docker_tls_key_path }}"
+        mode: 0544
+  when:
+    - docker_tls_cacert |length >0
+    - docker_tls_cert |length >0
+    - docker_tls_key |length >0
 
 - name: daemon.json
   ansible.builtin.template:
     dest: /etc/docker/daemon.json
-    group: root
     lstrip_blocks: yes
     mode: 0644
-    owner: root
     src: daemon.json.j2
   notify:
     - restart docker
-
-- name: tls docker.ca
-  ansible.builtin.copy:
-    content: "{{ docker_tls_cacert }}"
-    dest: "{{ docker_tls_cacert_path }}"
-    group: root
-    mode: 0544
-    owner: root
-  when:
-    - docker_tls_cacert | length > 0
-
-- name: tls docker.cert
-  ansible.builtin.copy:
-    content: "{{ docker_tls_cert }}"
-    dest: "{{ docker_tls_cert_path }}"
-    group: root
-    mode: 0544
-    owner: root
-  when:
-    - docker_tls_cert | length > 0
-
-- name: tls docker.key
-  ansible.builtin.copy:
-    content: "{{ docker_tls_key }}"
-    dest: "{{ docker_tls_key_path }}"
-    group: root
-    mode: 0544
-    owner: root
-  when:
-    - docker_tls_key | length > 0

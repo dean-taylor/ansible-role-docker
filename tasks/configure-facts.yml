@@ -1,0 +1,24 @@
+---
+# roles/docker/tasks/configure-facts.yml
+#
+- name: fact.d directory
+  ansible.builtin.file:
+    mode: 0755
+    path: "{{item}}"
+    state: directory
+  with_items:
+    - /etc/ansible
+    - /etc/ansible/facts.d
+
+- name: docker.fact
+  ansible.builtin.template:
+    dest: /etc/ansible/facts.d/docker.fact
+    lstrip_blocks: yes
+    mode: 0755
+    src: docker.fact.j2
+  register: docker_fact
+
+- name: load facts
+  ansible.builtin.setup:
+    filter: ansible_local
+  when: docker_fact.changed

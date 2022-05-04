@@ -1,3 +1,5 @@
 [Service]
 ExecStart=
-ExecStart=/usr/bin/dockerd -H fd://{% for host in docker_hosts %} -H {{ host }}{% endfor %} --containerd=/run/containerd/containerd.sock
+ExecStart=/usr/bin/dockerd -H fd:// -H tcp://127.0.0.1:2375
+{%- for host in docker_hosts %} -H tcp://{{host}}:2375{% endfor %}
+ --containerd=/run/containerd/containerd.sock

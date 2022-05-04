@@ -1,48 +1,17 @@
 ---
-# tasks file for docker
+# roles/docker/tasks/main.yml
+#
+- name: setup facts
+  ansible.builtin.include_tasks: configure-facts.yml
+
 - name: install
-  ansible.builtin.include_tasks: install.yml
+  ansible.builtin.include_tasks: install-{{ansible_distribution}}.yml
 
 - name: configure
-  ansible.builtin.include_tasks:
-    file: configure.yml
-    apply:
-      tags: configure
-  tags: configure
+  ansible.builtin.include_tasks: configure.yml
 
-- name: swarm
-  block:
-    - name: docker swarm managers?
-      ansible.builtin.set_fact:
-        docker_swarm_managers: "{{ (groups[docker_swarm_group] | default(ansible_play_hosts)) | intersect(ansible_play_hosts_all) }}"
-    - ansible.builtin.debug:
-        msg: Docker swarm manager nodes are {{ docker_swarm_managers }}
-
-    - name: swarm init
-      include_tasks: swarm-init.yml
-      when:
-        - inventory_hostname == docker_swarm_managers |first
-
-    - name: docker swarm manager address?
-      ansible.builtin.set_fact:
-        docker_swarm_manager_addr: "{{ hostvars[(docker_swarm_managers |first)]['ansible_local']['docker']['Swarm']['NodeAddr'] }}"
-      when:
-        - inventory_hostname != docker_swarm_managers |first
-
-    - name: swarm join manager
-      include_tasks: swarm-join-manager.yml
-      when:
-        - inventory_hostname in docker_swarm_managers
-        - inventory_hostname != docker_swarm_managers |first
-
-    - name: swarm join worker
-      include_tasks: swarm-join-worker.yml
-      when:
-        - inventory_hostname not in docker_swarm_managers
-
-  tags: [docker_swarm]
+- name: swarm configuration
+  ansible.builtin.include_tasks: configure-swarm.yml
   when:
-    - docker_swarm |bool
-    - ansible_local.docker is defined
-    - ansible_local.docker.Swarm is defined
-    - ansible_local.docker.Swarm.NodeID | length == 0
+    - docker_swarm_enabled
+    - ansible_local.docker.Swarm.NodeID |length ==0

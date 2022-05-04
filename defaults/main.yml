@@ -3,15 +3,18 @@
 docker_containerd_version: "1.4.4-1"
 docker_apt_key_id: "9DC858229FC7DD38854AE2D88D81803C0EBFCD88"
 docker_group_members:
-  - "{{ ansible_user_id }}"
+  - "{{ansible_user}}"
 docker_version: "5:20.10.6~3-0~ubuntu-focal"
-docker_swarm: false
+docker_ipv6_cidr: ""
+
+docker_swarm_enabled: false
 docker_swarm_group: "docker_swarm_manager"
 docker_swarm_interface: "{{ ansible_default_ipv4.interface }}"
 docker_swarm_advertise_addr: "{{ hostvars[inventory_hostname]['ansible_'+ docker_swarm_interface]['ipv4']['address'] }}"
 docker_swarm_listen_addr: "{{ hostvars[inventory_hostname]['ansible_'+ docker_swarm_interface]['ipv4']['address'] }}"
 docker_swarm_port: 2377
-docker_tls: false
+
+docker_tls_enabled: false
 docker_tls_client_auth: false
 docker_tls_cacert: ""
 docker_tls_cert: ""
@@ -19,7 +22,8 @@ docker_tls_key: ""
 docker_tls_cacert_path: '/etc/ssl/docker.ca'
 docker_tls_cert_path: '/etc/ssl/docker.cert'
 docker_tls_key_path: '/etc/ssl/docker.key'
-docker_hosts: []
-#docker_hosts:
+
+docker_hosts:
+  - "{{ansible_default_ipv4.address}}"
 #  - tcp://127.0.0.1:2375
 #  - tcp://0.0.0.0:2376       # tls
